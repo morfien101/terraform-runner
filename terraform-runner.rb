@@ -36,7 +36,7 @@ require 'pty' if OS.unix?
 
 # Gather the options
 class Options
-	VALID_ACTIONS=["plan", "apply", "destroy"]
+	VALID_ACTIONS=["plan", "apply", "destroy","get"]
 	def self.get_options
 		options=Hash.new
 		OptionParser.new do |opts|
@@ -49,6 +49,7 @@ class Options
 		    options[:action] = "plan"
 		    options[:debug] = false
 		    options[:create_json] = false
+		    options[:module_updates] = false
 
 		    # Get the options flags
 		    opts.on("-c", "--config-file /path/to/file", String, "Path to config JSON file") do |config|
@@ -57,6 +58,10 @@ class Options
 
 		    opts.on("-a", "--action action_type", String, "Terraform action: #{VALID_ACTIONS.join(', ')}") do |action|
 		    	options[:action] = action
+		    end
+
+		    opts.on("--update-modules", "Forces updates of modules. Only to be used with the get action.") do
+		    	options[:module_updates] = true
 		    end
 
 		    opts.on("-f", "--force", "No prompts") do |force|
@@ -246,6 +251,11 @@ class Terraform_runner
 
 	def tf_action_cmd
 		tf_action_command = "terraform #{@options[:action]} "
+
+		if @options[:action] == "get"
+			tf_action_command << " -update" if @options[:module_updates]
+			return tf_action_command
+		end
 
 		@config_file_data['inline_variables'].each {|k,v|
 			tf_action_command += inline_vars(k,v)
