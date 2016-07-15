@@ -215,7 +215,7 @@ class Terraform_runner
 		if OS.linux? || OS.mac?
 			terraform_bin = locate_terrafrom("which")
 		elsif OS.windows?
-			terraform_bin = locate_terrafrom("where")
+			terraform_bin = "\"#{locate_terrafrom("where")}\""
 		end
 		return terraform_bin
 	end
