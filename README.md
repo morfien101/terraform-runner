@@ -3,7 +3,7 @@
 The terraform-runner.rb script was written to over come some of the limitation of terraform.
 It is used to deploy code to different environments. It is written in ruby and is designed to be able to work on windows, mac and linux.
 
-*__You have to have the terraform binaries expanded on your computer and available in on of your PATH directory already__*.
+*__You have to have the terraform binaries expanded on your computer and available in one of your PATH directories already__*.
 
 The config files are written in json and describe the variables and files that need to be run. It will also download the current version of the terraform state file that is stored in S3 currently. This could technically be any supported backend remote state file but, has only beed tested with S3.
 
@@ -15,13 +15,15 @@ The config files are written in json and describe the variables and files that n
 5. Run the terraform command with the supplied action.  
 6. Output the STDOUT from the terraform executable.  
 
-Due to limitiation in the windows supplied verison on ruby standard gems. The outout of the terraform command will be shown only once the command has completed execution.
+This process was designed to work with tools like jenkins.
+
+Due to limitiation in the windows supplied verison on ruby standard gems. The STDOUT of the terraform command will be shown only once the command has completed execution.
 This is because of buffereing of STDOUT in C libaries which is vastly outside the scope of this artical.
 However it will make the terraform runner look like it has frozen until the run is complete.
 
 # What does the config file look like
-Below is an example config file.
-Example terraform runner file
+Below is an example config file.  
+__Example terraform runner file__
 ```javascript
 {
 	"environment": "AWS Training",
@@ -53,7 +55,7 @@ The location to the .tfvar files. You are able to keep all your variables in a s
 * __variable_files__  
 An array of the variable files that need to be pulled into the working directory for execution in this environment.  
 * __inline_variables__  
-This is a hash or dictionary of variable names and values that will be passed in to the terraform executable at run time.
+This is a hash or dictionary of variable names and values that will be passed into the terraform executable at run time.
 You are able to expand environment variables here using the syntax ${ENV['name_of_variable']}.
 No other code can be executed here, and the value of the environment variable will be passed as a string to terraform.  
 * __state_file__
@@ -67,8 +69,8 @@ The script allows you to get an example json file to work from when you first st
 
 # How do I use it?
 __To use the terraform runner you need to have ruby installed. It is required to have a version of ruby 2.0+.__  
-No additional gems should be required.  
-*In future the terraform runner will be packaged with a version of ruby to run it.*  
+No additional gems are required.  
+*In a future release of the terraform runner it will be packaged with a version of ruby to run it.*  
 
 Once you have your ruby installed you can use the help menu to build your commands.
 Terraform runner help menu
