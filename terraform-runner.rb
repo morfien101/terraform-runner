@@ -68,7 +68,7 @@ class Options
 		    	options[:silent] = true
 		    end
 
-		    opts.on("--json-example", "Prints default JSON file.") do 
+		    opts.on("--json-example", "Prints default JSON file.") do
 		    	puts '{'
 				puts '	"environment": "Running Environment",'
 				puts '	"tf_file_path":"path/",'
@@ -122,7 +122,7 @@ class Terraform_runner
 		@logger.formatter = proc do |severity, datetime, progname, msg|
   			"#{severity[0]} - #{datetime}: #{msg}\n"
 		end
-		
+
 		# Preflight checks
 		input_check()
 
@@ -174,8 +174,9 @@ class Terraform_runner
 		# We require a config file to do error checking.
 		# Fix: avoid dumping back trace?
 		fatal_error("You have not supplied a config file.", 1) if @options[:config_file].nil?
-		fatal_error("The config file seems to be missing or not valid.", 1) unless File.exist?(@options[:config_file])
-		
+		@logger.debug("Path to the config file: #{@options[:config_file]}")
+		fatal_error("The config file path seems to be missing or not valid.", 1) unless File.exist?(@options[:config_file])
+
 		# Tests to check user in put
 		@logger.debug("Checking the user input")
 		errors << "Invalid action: #{@options[:action]}" unless Options::VALID_ACTIONS.include?(@options[:action].downcase)
@@ -198,7 +199,7 @@ class Terraform_runner
 			errors << "Could not find source code directory: #{full_path}"
 		end
 		# Print errors and exit if there are errors
-		fatal_error(errors, 1) unless errors.empty? 
+		fatal_error(errors, 1) unless errors.empty?
 	end
 
 	def convert_json_to_ruby(config_file)
@@ -259,15 +260,13 @@ class Terraform_runner
 
 		@config_file_data['inline_variables'].each {|k,v|
 			tf_action_command += inline_vars(k,v)
-		}
+		} unless @config_file_data['inline_variables'].nil? || @config_file_data['inline_variables'].empty?
 
 		@config_file_data['variable_files'].each { |file|
 			tf_action_command += var_files(@config_file_data['variable_path'],file)
-		}
+		} unless @config_file_data['variable_files'].nil? || @config_file_data['variable_files'].empty?
 
-		if !@config_file_data['custom_args'].nil?
-			tf_action_command += @config_file_data['custom_args'].map{|arg| " #{arg}"}.join
-		end
+		tf_action_command += @config_file_data['custom_args'].map{|arg| " #{arg}"}.join unless @config_file_data['custom_args'].nil?
 
 		if @options[:action] == "destroy" && !@options[:silent]
 			puts "Please type 'yes' to destroy your stack. Only yes will be accepted."
