@@ -192,7 +192,7 @@ class Terraform_runner
 			if !File.exists?(full_path)
 				errors << "File not found #{full_path}"
 			end
-		}
+		} unless @config_file_data['variable_files'].nil?
 		@logger.debug("Is the source code dir there?")
 		full_path=File.expand_path(File.join(@base_dir,@config_file_data['tf_file_path']))
 		if !File.directory?(full_path)
