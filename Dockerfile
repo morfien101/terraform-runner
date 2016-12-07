@@ -1,7 +1,7 @@
-FROM ubuntu:yakkety
+FROM ubuntu
 MAINTAINER Randy Coburn - morfien101 (at) gmail (dot) com
 
-ENV TERRAFORM_VERSION=0.7.11
+ENV TERRAFORM_VERSION=0.7.13
 
 RUN apt-get update \
     && apt-get install -y -q ruby2.3 git curl \
