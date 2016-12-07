@@ -3,7 +3,7 @@ require 'json'
 require 'optparse'
 require 'logger'
 require 'fileutils'
-
+require 'time'
 
 # Set some base variables
 VERSION="0.0.3"
@@ -129,18 +129,11 @@ class Terraform_runner
 		# Create/Clean the working directory
 		@logger.debug("Setup working directory")
 		## Is the directory there?
-		working_dir=File.expand_path(File.join(@base_dir,"terraform-runner-working-dir"))
-		if File.directory?(working_dir)
-			@logger.debug('Clear and create directory terraform-runner-working-dir')
-			## If so delete and recreate
-			FileUtils.rm_rf(working_dir)
-			# We seem to have to wait a bit for the rm_rf. Else it deletes the directory we create.
-			sleep 2
-			make_working_dir(working_dir)
-		else
-			@logger.debug('Create directory terraform-runner-working-dir')
-			make_working_dir(working_dir)
-		end
+		# Create a unique directory each time.
+    epoch=Time.now().to_i
+		working_dir=File.expand_path(File.join(@base_dir,"terraform-runner-working-dir-#{epoch}"))
+		@logger.debug("Create directory #{working_dir}")
+		make_working_dir(working_dir)
 		# Copy the source files into the running dir
 		@logger.debug("Ship souce code to the running folder")
 		FileUtils.cp_r("#{File.expand_path(File.join(@base_dir,@config_file_data['tf_file_path']))}/.", working_dir,:verbose => @options[:debug])
