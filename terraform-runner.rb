@@ -33,6 +33,7 @@ module OS
 end
 
 require 'pty' if OS.unix?
+require 'english' if OS.windows?
 
 # Gather the options
 class Options
@@ -111,7 +112,12 @@ class Options
 end
 
 class Terraform_runner
+	# This is used to hold the value of the terraform exit code from the run.
+	# Mostly useful during the plan runs.
+	attr_reader :tf_exit_code
+
 	def initialize(options)
+    @tf_exit_code = 0
 		@options=options
 		@base_dir=Dir.pwd
 
@@ -246,6 +252,12 @@ class Terraform_runner
 	def tf_action_cmd
 		tf_action_command = "terraform #{@options[:action]} "
 
+    # we need the detailed exit code to see if there is any changes that
+    # need to be made to the environment.
+    if @options[:action] == "plan"
+      tf_action_command << " -detailed-exitcode "
+    end
+
 		if @options[:action] == "get"
 			tf_action_command << " -update" if @options[:module_updates]
 			return tf_action_command
@@ -287,7 +299,7 @@ class Terraform_runner
 		cmd.run_command(tf_state_file_cmd)
 		# Run the action specified
 		@logger.debug("Run the terraform action command.")
-		cmd.run_command(@tf_action_built_command)
+		@tf_exit_code = cmd.run_command(@tf_action_built_command)
 	end
 end
 
@@ -295,17 +307,23 @@ class WindowsCommand
 	def run_command(command_text)
 		command_output=`#{command_text}`
 		puts command_output
-		return $?
+		return $CHILD_STATUS.exitstatus
 	end
 end
 
 class LinuxCommand
 	def run_command(command_text)
+    # There is 2 places that this code will exit.
+    # 1) if the command runs successfully then it will return the exit code.
+    # 2) if the command failed it will run then rescue PTY::ChildExited block
 		begin
 			PTY.spawn(command_text) do |stdout, stdin,pid|
 				begin
 					stdout.each{|line| puts line}
 				rescue Errno::EIO
+          unless (ec = PTY.check(pid, false)).nil?
+            return ec.exitstatus
+          end
 				end
 			end
 		rescue PTY::ChildExited
@@ -314,5 +332,4 @@ class LinuxCommand
 	end
 end
 
-
-Terraform_runner.new(Options.get_options)
+exit Terraform_runner.new(Options.get_options).tf_exit_code
