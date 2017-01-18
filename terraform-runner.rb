@@ -6,7 +6,7 @@ require 'fileutils'
 require 'time'
 
 # Set some base variables
-VERSION="0.0.3"
+VERSION="0.0.4".freeze
 
 module OS
   def self.windows?
