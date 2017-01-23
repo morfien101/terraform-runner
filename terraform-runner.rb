@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
-require_relative 'lib/terraform'
-require 'pry'
+require 'terraform_runner'
+
 options = Options.get_options(ARGV)
 logger = LoggerHelper.get_logger(options)
 if InputChecker.new(options,logger).valid?
