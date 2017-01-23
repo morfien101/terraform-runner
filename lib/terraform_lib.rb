@@ -1,20 +1,5 @@
 #!/usr/bin/ruby
-# Bring in our source files
-require_relative 'modules_lib'
-require_relative 'logger_lib'
-require_relative 'options_lib'
-require_relative 'input_checker'
-require_relative 'command_builder_lib'
-require_relative 'command_lib'
-require_relative 'config_file_lib'
 
-
-require 'fileutils'
-require 'time'
-require 'english'
-
-# Set some base variables
-VERSION='0.1.0'.freeze
 
 class TerraformRunner
   # This is used to hold the value of the terraform exit code from the run.

@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-require_relative 'lib/terraform_lib'
+require_relative 'lib/terraform'
 require 'pry'
 options = Options.get_options(ARGV)
 logger = LoggerHelper.get_logger(options)
