@@ -16,7 +16,6 @@ RUN yum makecache \
     && curl https://raw.githubusercontent.com/morfien101/terraform-runner-gem/master/terraform_runner-${TERRAFORM_RUNNER_VERSION}.gem --create-dirs -o /terraform-runner/terraform_runner-${TERRAFORM_RUNNER_VERSION}.gem \
     && cd /terraform-runner \
     && gem install /terraform-runner/terraform_runner-${TERRAFORM_RUNNER_VERSION}.gem \
-    && gem install bundler && bundle install \
     && for i in $(ls -p | grep -v / | grep -v .rb); do rm -f $i; done \
     && for i in $(ls | grep .rb); do chmod 770 $i; done \
     && cd .. \
