@@ -3,22 +3,19 @@
 The terraform-runner.rb script was written to over come some of the limitation of terraform.
 It is used to deploy code to different environments. It is written in ruby and is designed to be able to work on windows, mac and linux.
 
-*__You have to have the terraform binaries expanded on your computer and available in one of your PATH directories already__*.
-
-The config files are written in json and describe the variables and files that need to be run. It will also download the current version of the terraform state file that is stored in S3 currently. This could technically be any supported backend remote state file but, has only beed tested with S3.
+The config files are written in json and describe the variables and files that need to be run. It will also download the current version of the terraform state file that is stored in S3 currently. This could technically be any supported backend remote state file but, has only been tested with S3.
 
 #### The process when running the script is as follows.  
-1. Delete the directory "terraform-runner-working-dir" if it is already there.  
-2. Create the directory "terraform-runner-working-dir".  
-3. Copy the contents of the project specified in the json file to the working directory.  
-4. Download a copy of the current remote terraform state file. It will be stored in "terraform-runner-working-dir/.terraform".  
-5. Run the terraform command with the supplied action.  
-6. Output the STDOUT from the terraform executable.  
+1. Create the directory "terraform-runner-working-dir-<datetime>".  
+2. Copy the contents of the project specified in the json file to the working directory.  
+3. Download a copy of the current remote terraform state file. It will be stored in "terraform-runner-working-dir/.terraform".  
+4. Run the terraform command with the supplied action.  
+5. Output the STDOUT from the terraform executable.  
 
-This process was designed to work with tools like jenkins.
+This process was designed to work with tools like Jenkins.
 
-Due to limitiation in the windows supplied verison on ruby standard gems. The STDOUT of the terraform command will be shown only once the command has completed execution.
-This is because of buffereing of STDOUT in C libaries which is vastly outside the scope of this artical.
+Due to limitation in the windows supplied version on ruby standard gems. The STDOUT of the terraform command will be shown only once the command has completed execution.
+This is because of buffering of STDOUT in C libraries which is vastly outside the scope of this README.
 However it will make the terraform runner look like it has frozen until the run is complete.
 
 # What does the config file look like
@@ -68,15 +65,25 @@ An array of custom runtime values that you would like to pass into your terrafor
 The script allows you to get an example json file to work from when you first start. Use the __--json-example__ argument when running the script.
 
 # How do I use it?
-__To use the terraform runner you need to have ruby installed. It is required to have a version of ruby 2.0+.__  
-No additional gems are required.  
-*In a future release of the terraform runner it will be packaged with a version of ruby to run it.*  
+__To use the terraform runner directly you need to have ruby installed. It is required to have a version of ruby 2.0+.__
+*__You have to have the terraform binaries expanded on your computer and available in one of your PATH directories already__*.
 
-Once you have your ruby installed you can use the help menu to build your commands.
+__The terraform runner repo now contains a Linux based container that has all the required gems and run time components required to run.__
+
+It also contains a Vagrant file that will download and boot up a Linux machine to run the container. The vagrant file should be in the root of your terraform directory as the launch container script (also provided) will link your working directory into the container.
+
+## What does all this mean for you?
+1. Clone the repo.
+2. Make your configuration files live in the scripts directory.
+3. Fire up your vagrant machine with "vagrant up"
+4. Add environment variables for your providers authentication requirements.
+5. Run the terraform runner as covered above or see below for some examples.
+
+Once you have your ruby installed or you are using the container you can use the help menu to build your commands.
 Terraform runner help menu
 ```
 $> ruby terraform-runner.rb -h
- 
+
 Usage: terraform-runner.rb [options]
 
 Specific options:
@@ -97,4 +104,7 @@ ruby terraform-runner.rb -a apply -c config_files\vpc_default.json
 ruby terraform-runner.rb -a delete -c config_files\vpc_default.json
 ruby terraform-runner.rb -a delete -f -c config_files\vpc_default.json
 ```
-  
+
+# Getting involved.
+Comments, feature requests and improvements are welcome.
+Use the normal git methods...
