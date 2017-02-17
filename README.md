@@ -5,7 +5,7 @@ It is used to deploy code to different environments. It is written in ruby and i
 
 The config files are written in json and describe the variables and files that need to be run. It will also download the current version of the terraform state file that is stored in S3 currently. This could technically be any supported backend remote state file but, has only been tested with S3.
 
-#### The process when running the script is as follows.  
+#### The process when running the script is as follows.
 1. Create the directory "terraform-runner-working-dir-<datetime>".  
 2. Copy the contents of the project specified in the json file to the working directory.  
 3. Download a copy of the current remote terraform state file. It will be stored in "terraform-runner-working-dir/.terraform".  
@@ -14,12 +14,12 @@ The config files are written in json and describe the variables and files that n
 
 This process was designed to work with tools like Jenkins.
 
-Due to limitation in the windows supplied version on ruby standard gems. The STDOUT of the terraform command will be shown only once the command has completed execution.
+Due to limitation in the __windows__ supplied version on ruby standard gems. The STDOUT of the terraform command will be shown only once the command has completed execution.
 This is because of buffering of STDOUT in C libraries which is vastly outside the scope of this README.
 However it will make the terraform runner look like it has frozen until the run is complete.
 
 # What does the config file look like
-Below is an example config file.  
+
 __Example terraform runner file__
 ```javascript
 {
@@ -72,12 +72,15 @@ __The terraform runner repo now contains a Linux based container that has all th
 
 It also contains a Vagrant file that will download and boot up a Linux machine to run the container. The vagrant file should be in the root of your terraform directory as the launch container script (also provided) will link your working directory into the container.
 
+If you are running on Windows you need to have a SSH Client installed to get into the vagrant machine with. Consider using gitbash ( https://git-scm.com/download/win )
+
 ## What does all this mean for you?
 1. Clone the repo.
-2. Make your configuration files live in the scripts directory.
-3. Fire up your vagrant machine with "vagrant up"
-4. Add environment variables for your providers authentication requirements.
-5. Run the terraform runner as covered above or see below for some examples.
+1. Create your configuration files in the scripts directory. See this repo for some example scripts. ( https://github.com/morfien101/terraform-scripts ) (If you are going to use my examples you need to change the bucket in the config files. This will make sense if you are using that repo.)
+1. Fire up your vagrant machine with "vagrant up"
+1. SSH into your Vagrant VM.
+1. Add environment variables for your providers authentication requirements.
+1. Run the terraform runner as covered above or see below for some examples.
 
 Once you have your ruby installed or you are using the container you can use the help menu to build your commands.
 Terraform runner help menu
