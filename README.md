@@ -85,9 +85,9 @@ If you are running on Windows you need to have a SSH Client installed to get int
 Once you have your ruby installed or you are using the container you can use the help menu to build your commands.
 Terraform runner help menu
 ```
-$> ruby terraform-runner.rb -h
+$> ./terraform-runner -h
 
-Usage: terraform-runner.rb [options]
+Usage: terraform-runner [options]
 
 Specific options:
     -c, --config-file /path/to/file  Path to config JSON file
@@ -102,10 +102,10 @@ Specific options:
 
 Below are some examples using the runner to do its job.  
 ```
-ruby terraform-runner.rb -a plan -c config_files\vpc_default.json
-ruby terraform-runner.rb -a apply -c config_files\vpc_default.json
-ruby terraform-runner.rb -a delete -c config_files\vpc_default.json
-ruby terraform-runner.rb -a delete -f -c config_files\vpc_default.json
+ruby terraform-runner -a plan -c config_files\vpc_default.json
+ruby terraform-runner -a apply -c config_files\vpc_default.json
+ruby terraform-runner -a delete -c config_files\vpc_default.json
+ruby terraform-runner -a delete -f -c config_files\vpc_default.json
 ```
 
 # Getting involved.
