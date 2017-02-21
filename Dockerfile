@@ -1,7 +1,7 @@
 FROM centos:7
 MAINTAINER Randy Coburn - morfien101 (at) gmail (dot) com
 
-ENV TERRAFORM_VERSION=0.8.4
+ENV TERRAFORM_VERSION=0.8.7
 ENV TERRAFORM_RUNNER_VERSION=0.1.5
 
 RUN yum makecache \
@@ -17,7 +17,7 @@ RUN yum makecache \
     && cd /terraform-runner \
     && gem install /terraform-runner/terraform_runner-${TERRAFORM_RUNNER_VERSION}.gem \
     && for i in $(ls -p | grep -v / | grep -v terraform-runner); do rm -f $i; done \
-    && for i in $(ls | grep .rb); do chmod 770 $i; done \
+    && chmod 700 terraform-runner \
     && cd .. \
     && echo "cd /terraform-runner" >> /root/.bashrc
 
