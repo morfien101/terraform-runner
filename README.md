@@ -79,8 +79,41 @@ If you are running on Windows you need to have a SSH Client installed to get int
 1. Create your configuration files in the scripts directory. See this repo for some example scripts. ( https://github.com/morfien101/terraform-scripts ) (If you are going to use my examples you need to change the bucket in the config files. This will make sense if you are using that repo.)
 1. Fire up your vagrant machine with "vagrant up"
 1. SSH into your Vagrant VM.
-1. Add environment variables for your providers authentication requirements.
+1. Add environment variables for your providers authentication requirements. Unless you have passed in credential files. See below.
 1. Run the terraform runner as covered above or see below for some examples.
+
+## Credentials
+### Credential files
+Credential files can be passed into the container. You will need to set an environment variable called __TERRAFORM_CREDS_FILES__ with the list of directories that you want to be passed in separated by a "__;__".
+
+These files will then be available for use in your scripts in the directory __/terraform-runner/creds/__
+
+```sh
+export TERRAFORM_CREDS_FILES="c:\users\awesome person\.aws;c:\users\awesome person\.chef"
+```
+
+```
+[root@50b6d961faf3 terraform-runner]# ls -lha /terraform-runner/creds/
+total 12K
+drwxr-xr-x 4 root root 4.0K Feb 23 17:27 .
+drwxr-xr-x 5 root root 4.0K Feb 23 17:33 ..
+drwxrwxrwx 1 1000 1000    0 Mar 23  2016 .aws
+drwxrwxrwx 1 1000 1000 4.0K Feb  6 14:59 .chef
+```
+### Credentials as Environmental variables
+If you choose not to pass in your credentials as a file you will need to create the environment variables that you need for your providers that you are making use of.
+
+These can be looked up in the terraform documentation.
+As an example the AWS provisioner requires
+```sh
+export AWS_ACCESS_KEY_ID="anaccesskey"
+export AWS_SECRET_ACCESS_KEY="asecretkey"
+```
+
+You can see the this in this document file:
+https://www.terraform.io/docs/providers/aws/index.html
+
+## The help menu
 
 Once you have your ruby installed or you are using the container you can use the help menu to build your commands.
 Terraform runner help menu
