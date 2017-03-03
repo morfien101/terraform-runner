@@ -1,10 +1,11 @@
 FROM centos:7
 MAINTAINER Randy Coburn - morfien101 (at) gmail (dot) com
 
-ENV TERRAFORM_VERSION=0.8.7
-ENV TERRAFORM_RUNNER_VERSION=0.1.6
+ARG TERRAFORM_VERSION
+ARG TERRAFORM_RUNNER_VERSION
 
 RUN yum makecache \
+    && yum update -y \
     && yum install -y ruby git curl unzip which vim \
     && curl -L https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > /tmp/terraform.zip \
     && yum clean all \
