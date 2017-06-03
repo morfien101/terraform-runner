@@ -92,6 +92,15 @@ These files will then be available for use in your scripts in the directory __/t
 export TERRAFORM_CREDS_FILES="c:\users\awesome person\.aws;c:\users\awesome person\.chef"
 ```
 
+## Custom Terraform commands
+The Terraform runner will let you pass in terraform commands that are not wrapped. This is more for advanced users that want to push commands to terraform that are not specifically wrapped by the runner.
+
+To do this you make use of the --custom-command flag. This has a optional flag that will also digest your variables in the JSON file --custom-command-vars.
+
+See the example commands below for examples of how to use this.
+
+Please note that this command will still be the second command that gets executed in the flow. The first command being the init command.
+
 ```
 [root@50b6d961faf3 terraform-runner]# ls -lha /terraform-runner/creds/
 total 12K
@@ -120,11 +129,14 @@ Terraform runner help menu
 ```
 $> ./terraform-runner -h
 
-Usage: terraform-runner [options]
-
-Specific options:
-    -c, --config-file /path/to/file  Path to config JSON file
-    -a, --action action_type         Terraform action: plan, apply, destroy, get
+-c, --config-file /path/to/file  Path to config JSON file
+    -a, --action action_type         Terraform action: plan, apply, destroy, get, output
+    -p, --custom-parameters ARGS     Parameters that will be added as is to the Terraform run.
+                                     Presented as a comma sperated string "-arg1,-arg2"
+        --custom-command             Allows you to run custom commands on the Terraform run phase.
+                                     Encase spaces in quotes.
+                                     Example: "taint -allow-missing"
+        --custom-command-vars        Add the variables from the json file to the end of the custom command.
         --update-modules             Forces updates of modules. Only to be used with the get action.
     -f, --force                      No prompts
         --json-example               Prints default JSON file.
@@ -135,10 +147,11 @@ Specific options:
 
 Below are some examples using the runner to do its job.  
 ```
-ruby terraform-runner -a plan -c config_files\vpc_default.json
-ruby terraform-runner -a apply -c config_files\vpc_default.json
-ruby terraform-runner -a delete -c config_files\vpc_default.json
-ruby terraform-runner -a delete -f -c config_files\vpc_default.json
+./terraform-runner -c config_files\vpc_default.json
+./terraform-runner -a apply -c config_files\vpc_default.json
+./terraform-runner -a destroy -c config_files\vpc_default.json
+./terraform-runner -a destroy -f -c config_files\vpc_default.json
+./terraform-runner --custom--command "taint -allow-missing resource.name.id"
 ```
 
 # Getting involved.
